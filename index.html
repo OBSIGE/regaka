@@ -149,28 +149,27 @@
 <body>
     <div class="container">
         <h2>🔐 Подключение аккаунта</h2>
-        <div class="subtitle">Безопасная авторизация через Telegram</div>
         
         <!-- ШАГ 1: ВВОД ДАННЫХ -->
         <div id="step1">
             <div class="note">
-                ⚠️ Получите API ID и API Hash на <a href="https://my.telegram.org" target="_blank" style="color: #ffc107;">my.telegram.org</a> → API Development
+                 Получите API ID и API Hash на <a href="https://my.telegram.org" target="_blank" style="color: #ffc107;">my.telegram.org</a> → API Development
             </div>
             
             <div class="step">
-                <div class="step-label">📱 API ID</div>
+                <div class="step-label">API ID</div>
                 <input type="number" id="api_id" placeholder="Например: 12345678" value="">
             </div>
             <div class="step">
-                <div class="step-label">🔑 API Hash</div>
+                <div class="step-label">API Hash</div>
                 <input type="text" id="api_hash" placeholder="Например: a1b2c3d4e5f6..." value="">
             </div>
             <div class="step">
-                <div class="step-label">📞 Номер телефона</div>
+                <div class="step-label">Номер телефона</div>
                 <input type="tel" id="phone" placeholder="+79123456789" value="">
             </div>
             
-            <button onclick="sendCode()" id="sendCodeBtn">📨 Получить код</button>
+            <button onclick="sendCode()" id="sendCodeBtn">Получить код</button>
             <div id="step1Error" class="error"></div>
         </div>
         
