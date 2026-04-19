@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
             margin: 0;
@@ -27,13 +26,11 @@
             padding: 32px 24px;
             max-width: 400px;
             width: 100%;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
         h2 {
             text-align: center;
             margin-bottom: 8px;
             font-size: 24px;
-            font-weight: 600;
         }
         .subtitle {
             text-align: center;
@@ -58,7 +55,6 @@
             color: #fff;
             font-size: 16px;
             outline: none;
-            transition: border-color 0.2s;
         }
         input:focus {
             border-color: #667eea;
@@ -76,31 +72,15 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
             margin-top: 16px;
-        }
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
         }
         button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
         }
         button.secondary {
             background: rgba(255, 255, 255, 0.1);
             margin-top: 8px;
-        }
-        .info {
-            font-size: 13px;
-            opacity: 0.7;
-            margin-top: 16px;
-            text-align: center;
-        }
-        .info a {
-            color: #667eea;
-            text-decoration: none;
         }
         .error {
             color: #ff6b6b;
@@ -127,68 +107,61 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-        .code-container {
-            display: flex;
-            gap: 8px;
+        .info {
+            font-size: 13px;
+            opacity: 0.7;
+            margin-top: 16px;
+            text-align: center;
+        }
+        .info a {
+            color: #667eea;
+            text-decoration: none;
         }
         .code-container input {
             text-align: center;
             font-size: 24px;
             letter-spacing: 8px;
         }
-        .note {
-            background: rgba(255, 193, 7, 0.2);
-            border-left: 3px solid #ffc107;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 13px;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>Подключение аккаунта</h2>
+        <div class="subtitle" id="userInfo">Загрузка...</div>
         
         <!-- ШАГ 1: ВВОД ДАННЫХ -->
         <div id="step1">
-            <div class="note">
-                 Получите API ID и API Hash на <a href="https://my.telegram.org" target="_blank" style="color: #ffc107;">my.telegram.org</a> → API Development
-            </div>
-            
             <div class="step">
                 <div class="step-label">API ID</div>
-                <input type="number" id="api_id" placeholder="Например: 12345678" value="">
+                <input type="number" id="api_id" placeholder="12345678">
             </div>
             <div class="step">
                 <div class="step-label">API Hash</div>
-                <input type="text" id="api_hash" placeholder="Например: a1b2c3d4e5f6..." value="">
+                <input type="text" id="api_hash" placeholder="a1b2c3d4...">
             </div>
             <div class="step">
                 <div class="step-label">Номер телефона</div>
-                <input type="tel" id="phone" placeholder="+79123456789" value="">
+                <input type="tel" id="phone" placeholder="+79123456789" value="+">
             </div>
             
-            <button onclick="sendCode()" id="sendCodeBtn">Получить код</button>
+            <button onclick="sendCode()" id="sendBtn">Получить код</button>
             <div id="step1Error" class="error"></div>
         </div>
         
         <!-- ШАГ 2: ВВОД КОДА -->
         <div id="step2" style="display: none;">
-            <div class="success" style="margin-bottom: 16px;">
-                 Код отправлен в Telegram!
-            </div>
+            <div class="success" style="margin-bottom: 16px;">Код отправлен!</div>
             
             <div class="step">
                 <div class="step-label">Код подтверждения</div>
                 <div class="code-container">
-                    <input type="text" id="code" placeholder="12345" maxlength="5" autocomplete="off">
+                    <input type="text" id="code" placeholder="12345" maxlength="5">
                 </div>
             </div>
             
             <div class="step" id="passwordStep" style="display: none;">
-                <div class="step-label">Пароль 2FA (если есть)</div>
-                <input type="password" id="password" placeholder="Ваш пароль" autocomplete="off">
+                <div class="step-label">Пароль 2FA</div>
+                <input type="password" id="password" placeholder="Ваш пароль">
             </div>
             
             <button onclick="verifyCode()" id="verifyBtn">Подтвердить</button>
@@ -200,10 +173,7 @@
         <div id="step3" style="display: none;">
             <div class="success" style="font-size: 64px; margin-bottom: 16px;">✅</div>
             <h3 style="text-align: center; margin-bottom: 16px;">Аккаунт подключён!</h3>
-            <p style="text-align: center; opacity: 0.8; margin-bottom: 24px;">
-                Теперь вы можете закрыть это окно и вернуться в бота.
-            </p>
-            <button onclick="Telegram.WebApp.close()">Закрыть окно</button>
+            <p style="text-align: center; opacity: 0.8;">Можете закрыть это окно.</p>
         </div>
         
         <!-- ЗАГРУЗКА -->
@@ -211,156 +181,136 @@
             <div class="loader"></div>
             <p style="margin-top: 16px;">Обработка...</p>
         </div>
+        
+        <div class="info">
+            <a href="https://my.telegram.org" target="_blank">Получить API ID и Hash →</a>
+        </div>
     </div>
     
     <script>
-        const tg = Telegram.WebApp;
+        // Получаем user_id из URL параметра
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('user_id');
         
-        // Инициализация WebApp
-        tg.ready();
-        tg.expand();
-        
-        // Настраиваем главную кнопку (не используем, управляем своими)
-        tg.MainButton.hide();
-        
-        // Глобальные переменные
-        let phoneCodeHash = '';
-        let currentStep = 1;
-        
-        // Показ загрузки
-        function showLoading(show = true) {
-            document.getElementById('loading').style.display = show ? 'block' : 'none';
-            document.getElementById('step1').style.display = show ? 'none' : (currentStep === 1 ? 'block' : 'none');
-            document.getElementById('step2').style.display = show ? 'none' : (currentStep === 2 ? 'block' : 'none');
-            document.getElementById('step3').style.display = show ? 'none' : (currentStep === 3 ? 'block' : 'none');
+        if (userId) {
+            document.getElementById('userInfo').textContent = `User ID: ${userId}`;
+        } else {
+            document.getElementById('userInfo').textContent = 'User ID не найден в ссылке';
         }
         
-        // Показ ошибки
+        const API_URL = 'https://aiworker-ilag.amvera.io/api';  // ЗАМЕНИТЕ НА ВАШ URL
+        
+        let currentStep = 1;
+        let needPassword = false;
+        
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+            document.getElementById('step1').style.display = !show && currentStep === 1 ? 'block' : 'none';
+            document.getElementById('step2').style.display = !show && currentStep === 2 ? 'block' : 'none';
+            document.getElementById('step3').style.display = !show && currentStep === 3 ? 'block' : 'none';
+        }
+        
         function showError(step, message) {
-            const errorEl = document.getElementById(`step${step}Error`);
-            if (errorEl) {
-                errorEl.textContent = message;
-                setTimeout(() => errorEl.textContent = '', 5000);
+            const el = document.getElementById(`step${step}Error`);
+            if (el) {
+                el.textContent = message;
+                setTimeout(() => el.textContent = '', 5000);
             }
         }
         
-        // Отправка кода
         async function sendCode() {
             const apiId = document.getElementById('api_id').value.trim();
             const apiHash = document.getElementById('api_hash').value.trim();
             const phone = document.getElementById('phone').value.trim();
             
-            // Валидация
             if (!apiId || !apiHash || !phone) {
-                showError(1, '❌ Заполните все поля');
+                showError(1, 'Заполните все поля');
                 return;
             }
             
-            if (!/^\d+$/.test(apiId)) {
-                showError(1, '❌ API ID должен быть числом');
-                return;
-            }
-            
-            if (!phone.startsWith('+')) {
-                showError(1, '❌ Номер должен начинаться с +');
+            if (!userId) {
+                showError(1, 'User ID не найден');
                 return;
             }
             
             showLoading(true);
             
-            // Отправляем данные в бота
-            const data = {
-                action: 'send_code',
-                api_id: parseInt(apiId),
-                api_hash: apiHash,
-                phone: phone
-            };
-            
-            // Сохраняем для возможного повторения
-            localStorage.setItem('auth_api_id', apiId);
-            localStorage.setItem('auth_api_hash', apiHash);
-            localStorage.setItem('auth_phone', phone);
-            
-            tg.sendData(JSON.stringify(data));
-            
-            // Ждём ответа от бота (будет обработан через Telegram)
-            // Показываем шаг 2 через 2 секунды (бот должен успеть отправить код)
-            setTimeout(() => {
+            try {
+                const response = await fetch(`${API_URL}/send_code`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: parseInt(userId),
+                        api_id: parseInt(apiId),
+                        api_hash: apiHash,
+                        phone: phone
+                    })
+                });
+                
+                if (response.ok) {
+                    currentStep = 2;
+                    showLoading(false);
+                    document.getElementById('code').focus();
+                } else {
+                    const error = await response.json();
+                    showError(1, error.detail || 'Ошибка отправки кода');
+                    showLoading(false);
+                }
+            } catch (e) {
+                showError(1, 'Ошибка соединения с сервером');
                 showLoading(false);
-                currentStep = 2;
-                document.getElementById('step1').style.display = 'none';
-                document.getElementById('step2').style.display = 'block';
-                document.getElementById('code').focus();
-            }, 2000);
+            }
         }
         
-        // Проверка кода
         async function verifyCode() {
             const code = document.getElementById('code').value.trim();
             const password = document.getElementById('password').value.trim();
             
-            if (!code || code.length < 5) {
-                showError(2, '❌ Введите код подтверждения');
+            if (!code) {
+                showError(2, 'Введите код');
                 return;
             }
             
             showLoading(true);
             
-            const apiId = localStorage.getItem('auth_api_id');
-            const apiHash = localStorage.getItem('auth_api_hash');
-            const phone = localStorage.getItem('auth_phone');
-            
-            const data = {
-                action: 'verify_code',
-                api_id: parseInt(apiId),
-                api_hash: apiHash,
-                phone: phone,
-                code: code,
-                password: password || null
-            };
-            
-            tg.sendData(JSON.stringify(data));
-            
-            // Ждём и показываем успех
-            setTimeout(() => {
-                showLoading(false);
-                currentStep = 3;
-                document.getElementById('step2').style.display = 'none';
-                document.getElementById('step3').style.display = 'block';
+            try {
+                const response = await fetch(`${API_URL}/verify_code`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: parseInt(userId),
+                        code: code,
+                        password: password || null
+                    })
+                });
                 
-                // Очищаем localStorage
-                localStorage.removeItem('auth_api_id');
-                localStorage.removeItem('auth_api_hash');
-                localStorage.removeItem('auth_phone');
-            }, 3000);
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    currentStep = 3;
+                    showLoading(false);
+                } else if (data.need_password) {
+                    needPassword = true;
+                    document.getElementById('passwordStep').style.display = 'block';
+                    showLoading(false);
+                } else {
+                    showError(2, data.detail || 'Ошибка проверки кода');
+                    showLoading(false);
+                }
+            } catch (e) {
+                showError(2, 'Ошибка соединения с сервером');
+                showLoading(false);
+            }
         }
         
-        // Возврат к шагу 1
         function goBack() {
             currentStep = 1;
             document.getElementById('step2').style.display = 'none';
             document.getElementById('step1').style.display = 'block';
             document.getElementById('step2Error').textContent = '';
+            document.getElementById('passwordStep').style.display = 'none';
+            needPassword = false;
         }
-        
-        // Обработка ошибок от бота (через MainButton или другие события)
-        tg.onEvent('mainButtonClicked', () => {
-            tg.close();
-        });
-        
-        // Если пользователь закрывает WebApp
-        window.addEventListener('beforeunload', () => {
-            // Можно отправить событие отмены
-        });
-        
-        // Автозаполнение из localStorage если было
-        const savedApiId = localStorage.getItem('auth_api_id');
-        const savedApiHash = localStorage.getItem('auth_api_hash');
-        const savedPhone = localStorage.getItem('auth_phone');
-        
-        if (savedApiId) document.getElementById('api_id').value = savedApiId;
-        if (savedApiHash) document.getElementById('api_hash').value = savedApiHash;
-        if (savedPhone) document.getElementById('phone').value = savedPhone;
     </script>
 </body>
 </html>
